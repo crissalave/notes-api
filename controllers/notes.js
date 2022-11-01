@@ -6,22 +6,22 @@ notesRouter.get('/', async (req, res) => {
   res.json(notes).end()
 })
 
-notesRouter.get('/:id', async (req, res, next) => {
+notesRouter.get('/:id', async (req, res) => {
   const { id } = req.params
 
   // similar to the find method
   const note = await Note.findById(id)
-  if (note) return res.json(note).end()
-  res.status(404).end()
+  if (!note) return res.status(404).end()
+
+  res.json(note).end()
 })
 
-notesRouter.post('/', async (req, res, next) => {
+notesRouter.post('/', async (req, res) => {
   const { content, important } = req.body
 
   if (content === undefined) {
-    return res.status(400).json({
-      error: 'Content missing'
-    }).end()
+    res.status(400).json({ error: 'Content missing' }).end()
+    return
   }
 
   const note = new Note({
@@ -34,7 +34,7 @@ notesRouter.post('/', async (req, res, next) => {
   res.status(201).json(noteSaved).end()
 })
 
-notesRouter.put('/:id', async (req, res, next) => {
+notesRouter.put('/:id', async (req, res) => {
   const { id } = req.params
   const { content, important } = req.body
 
@@ -44,18 +44,21 @@ notesRouter.put('/:id', async (req, res, next) => {
     important
   }
 
+  const options = {
+    returnDocument: 'after',
+    new: true
+  }
+
   // by default this method return the object before the update
   // (optionally) change that with returnDocument: 'after'
-  const noteUpdated = await Note.findByIdAndUpdate(
-    id, newNote, { returnDocument: 'after', new: true }
-  )
+  const noteUpdated = await Note.findByIdAndUpdate(id, newNote, options)
   res.status(202).json(noteUpdated)
 })
 
-notesRouter.delete('/:id', async (req, res, next) => {
+notesRouter.delete('/:id', async (req, res) => {
   const { id } = req.params
 
-  // the method name is explicid
+  // the method's name is explicid
   await Note.findByIdAndRemove(id)
   res.status(204).end()
 })

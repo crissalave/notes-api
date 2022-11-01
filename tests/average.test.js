@@ -1,3 +1,4 @@
+import { test, describe, expect } from 'vitest'
 const { average } = require('../utils/for_testing')
 
 describe.skip('average', () => {

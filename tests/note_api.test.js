@@ -1,3 +1,4 @@
+import { test, describe, beforeEach, afterAll, expect } from 'vitest'
 const mongoose = require('mongoose')
 const supertest = require('supertest')
 const helper = require('./test_helper')
@@ -9,17 +10,7 @@ const Note = require('../models/note')
 beforeEach(async () => {
   await Note.deleteMany({})
   await Note.insertMany(helper.initialNotes)
-
-  // const noteObjects = helper.initialNotes
-  //   .map(note => new Note(note))
-  // const promiseArray = noteObjects.map(note => note.save())
-  // await Promise.all(promiseArray)
-
-  // for (const note of helper.initialNotes) {
-  //   const noteObject = new Note(note)
-  //   await noteObject.save()
-  // }
-}, 100000)
+}, 20000)
 
 describe('when there is initially some notes saved', () => {
   test('notes are returned as json', async () => {
@@ -27,13 +18,13 @@ describe('when there is initially some notes saved', () => {
       .get('/api/notes')
       .expect(200)
       .expect('Content-Type', /application\/json/)
-  })
+  }, 40000)
 
   test('all the notes are returned', async () => {
     const res = await api.get('/api/notes')
 
     expect(res.body).toHaveLength(helper.initialNotes.length)
-  })
+  }, 20000)
 
   test('a specific note is within the returned notes', async () => {
     const res = await api.get('/api/notes')
@@ -42,10 +33,10 @@ describe('when there is initially some notes saved', () => {
     expect(contents).toContain(
       'Browser can execute only Javascript'
     )
-  })
+  }, 20000)
 })
 
-describe('viewing a spcific note', () => {
+describe('viewing a specific note', () => {
   test('succeeds with a valid id', async () => {
     const notesAtStart = await helper.notesInDb()
     const noteToView = notesAtStart[0]
