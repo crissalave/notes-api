@@ -12,7 +12,7 @@ beforeEach(async () => {
   await Note.insertMany(helper.initialNotes)
 }, 20000)
 
-describe('when there is initially some notes saved', () => {
+describe.skip('when there is initially some notes saved', () => {
   test('notes are returned as json', async () => {
     await api
       .get('/api/notes')
@@ -36,7 +36,7 @@ describe('when there is initially some notes saved', () => {
   }, 20000)
 })
 
-describe('viewing a specific note', () => {
+describe.skip('viewing a specific note', () => {
   test('succeeds with a valid id', async () => {
     const notesAtStart = await helper.notesInDb()
     const noteToView = notesAtStart[0]
@@ -68,7 +68,7 @@ describe('viewing a specific note', () => {
   })
 })
 
-describe('addition of a note', () => {
+describe.skip('addition of a note', () => {
   test('succeeds with valid data', async () => {
     const newNote = {
       content: 'async/await simplifies making async calls',
@@ -105,7 +105,7 @@ describe('addition of a note', () => {
   })
 })
 
-describe('deletion of a note', () => {
+describe.skip('deletion of a note', () => {
   test('succeeds with status code 204 if id is valid', async () => {
     const notesAtStart = await helper.notesInDb()
     const noteToDelete = notesAtStart[0]

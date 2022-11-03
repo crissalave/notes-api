@@ -1,8 +1,15 @@
 const notesRouter = require('express').Router()
 const Note = require('../models/note')
+const User = require('../models/user')
 
 notesRouter.get('/', async (req, res) => {
-  const notes = await Note.find({})
+  const notes = await Note
+    .find({})
+    .populate({
+      path: 'user',
+      select: ['username', 'name']
+    })
+
   res.json(notes).end()
 })
 
@@ -17,20 +24,26 @@ notesRouter.get('/:id', async (req, res) => {
 })
 
 notesRouter.post('/', async (req, res) => {
-  const { content, important } = req.body
+  const { userId, content, important } = req.body
 
   if (content === undefined) {
     res.status(400).json({ error: 'Content missing' }).end()
     return
   }
 
+  const user = await User.findById(userId)
+
   const note = new Note({
     content,
     important: important || false,
-    date: new Date()
+    date: new Date(),
+    user: user._id
   })
 
   const noteSaved = await note.save()
+  user.notes = [...user.notes, noteSaved._id]
+  await user.save()
+
   res.status(201).json(noteSaved).end()
 })
 
