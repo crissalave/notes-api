@@ -4,8 +4,8 @@ const { Schema, model } = mongoose
 const noteSchema = new Schema({
   content: {
     type: String,
-    require: true,
-    minlength: 12
+    require: true
+    // minlength: 12
   },
   date: Date,
   important: Boolean,
